@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F0F7FF"/>
+      <stop offset="100%" stop-color="#D6E4FF"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4E8BD1"/>
+      <stop offset="100%" stop-color="#1D4ED8"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" rx="48" fill="url(#bg)"/>
+  <g transform="translate(100 120)">
+    <text fill="#0F172A" font-family="Inter, 'Segoe UI', sans-serif" font-size="54" font-weight="600">
+      Team Availability Dashboard
+    </text>
+    <text y="84" fill="#475569" font-family="Inter, 'Segoe UI', sans-serif" font-size="28">
+      Real-time visibility into availability, throughput, and return times.
+    </text>
+  </g>
+  <g transform="translate(100 280)">
+    <rect width="320" height="180" rx="28" fill="#fff" stroke="#E2E8F0"/>
+    <text x="32" y="64" fill="#4E8BD1" font-family="Inter, 'Segoe UI', sans-serif" font-size="22" font-weight="600">
+      Available
+    </text>
+    <text x="32" y="120" fill="#0F172A" font-family="Inter, 'Segoe UI', sans-serif" font-size="56" font-weight="700">
+      4
+    </text>
+  </g>
+  <g transform="translate(460 280)">
+    <rect width="320" height="180" rx="28" fill="#fff" stroke="#E2E8F0"/>
+    <text x="32" y="64" fill="#F6A609" font-family="Inter, 'Segoe UI', sans-serif" font-size="22" font-weight="600">
+      Busy
+    </text>
+    <text x="32" y="120" fill="#0F172A" font-family="Inter, 'Segoe UI', sans-serif" font-size="56" font-weight="700">
+      2
+    </text>
+  </g>
+  <g transform="translate(820 280)">
+    <rect width="320" height="180" rx="28" fill="#fff" stroke="#E2E8F0"/>
+    <text x="32" y="64" fill="#C94B4B" font-family="Inter, 'Segoe UI', sans-serif" font-size="22" font-weight="600">
+      Offline
+    </text>
+    <text x="32" y="120" fill="#0F172A" font-family="Inter, 'Segoe UI', sans-serif" font-size="56" font-weight="700">
+      1
+    </text>
+  </g>
+  <rect x="100" y="500" width="1000" height="60" rx="30" fill="url(#accent)"/>
+  <text x="130" y="542" fill="#fff" font-family="Inter, 'Segoe UI', sans-serif" font-size="26" font-weight="600">
+    Built with Next.js + React + TypeScript · LocalStorage persistence + custom hooks
+  </text>
+</svg>
+
