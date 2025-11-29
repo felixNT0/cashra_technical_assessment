@@ -15,8 +15,9 @@ A production-ready React + TypeScript dashboard for managing team availability. 
 
 2. ✅ **Status toggle button** for each team member
 
-   - _Implementation: `useMemberMutations.ts` → `toggleStatus()` function_
-   - _UI: Button in each member card with status cycle logic_
+   - _Implementation: `useMemberMutations.ts` → `toggleStatus()` and `setStatus()` functions_
+   - _UI: Button in each member card that cycles through all statuses_
+   - _Status Cycle: `available → busy → offline → available` (repeats)_
 
 3. ✅ **Filter system** at the top:
 
@@ -41,9 +42,10 @@ A production-ready React + TypeScript dashboard for managing team availability. 
      - _Implementation: `useMemberMutations.ts` lines 35-37, 46-48_
 
 6. ✅ **localStorage persistence** - entire state saved, refresh does not lose state
-   - _Implementation: `useDashboardStorage.ts` + `utils/storage.ts`_
+   - _Implementation: `useDashboardStorage.ts` + `utils/storage.ts` + `utils/encryptedStorage.ts`_
    - _Storage key: `"team-dashboard-state"`_
    - _Debounced writes (300ms) to prevent excessive localStorage calls_
+   - _Encrypted storage using AES encryption (CryptoJS) for data security_
 
 ### Technical Constraints (All Met)
 
@@ -141,7 +143,8 @@ src/
 │   └── team.ts                  # Baseline data, filter options, status maps
 │
 └── utils/                       # Utility functions
-    ├── storage.ts               # localStorage utilities (debounced)
+    ├── storage.ts               # localStorage utilities (debounced, uses encryptedStorage)
+    ├── encryptedStorage.ts      # AES encryption for localStorage
     ├── time.ts                  # Time formatting utilities
     ├── id.ts                    # ID generation
     ├── stats.ts                 # Statistics calculations
@@ -179,24 +182,29 @@ src/
 **Status Cycle:**
 
 ```
-available → busy → available → offline → available
+available → busy → offline → available (repeats)
 ```
 
 **Implementation Logic** (`useMemberMutations.ts`):
 
 1. If current status is `available`:
-   - If member has `returnTime` (recently returned), next status is `offline`
-   - Otherwise, next status is `busy`
+   - Next status is `busy` (start working)
 2. If current status is `busy`:
-   - Next status is `available` → **Rule b**: Increment `tasksCompleted`
+   - Next status is `offline` (go offline)
 3. If current status is `offline`:
    - Next status is `available` → **Rule a**: Store `returnTime`
 
+**Business Rules Applied:**
+
+- **Rule a**: When transitioning `offline → available`, store the return time
+- **Rule b**: When transitioning `busy → available`, increment `tasksCompleted` counter
+- Both rules are enforced in the `setStatus()` function, which is called by the toggle button
+
 **Why this approach?**
 
-- Simple, predictable cycle
+- Simple, predictable cycle through all three statuses
 - Business rules enforced at the mutation level
-- No complex state machines needed
+- Users can cycle through all statuses with a single button
 - Easy to understand and maintain
 
 ### 3. Filtering Implementation
@@ -218,14 +226,24 @@ available → busy → available → offline → available
 
 ### 4. localStorage Persistence
 
-**Decision: Debounced writes with lazy initialization**
+**Decision: Encrypted storage with debounced writes and lazy initialization**
 
-**Implementation** (`useDashboardStorage.ts` + `utils/storage.ts`):
+**Implementation** (`useDashboardStorage.ts` + `utils/storage.ts` + `utils/encryptedStorage.ts`):
 
 - **Lazy Read**: State initialized from localStorage on first render (no useEffect)
 - **Debounced Write**: Writes debounced to 300ms to prevent excessive localStorage calls
 - **Storage Structure**: Single object `{ members, filter }` stored under key `"team-dashboard-state"`
+- **Encryption**: All data encrypted using AES encryption (CryptoJS) before storage
+- **Security**: Secret key derived from environment variables or domain-based fallback
 - **Error Handling**: Graceful fallback if localStorage fails (uses baseline data)
+- **Migration**: Automatically handles unencrypted data and corrupted entries
+
+**Why encrypted storage?**
+
+- Protects sensitive team data
+- Prevents unauthorized access to localStorage
+- Maintains data integrity
+- Production-ready security
 
 **Why debounced writes?**
 
@@ -304,23 +322,26 @@ available → busy → available → offline → available
 **Decision: Mobile-first with sticky header on mobile**
 
 - **Mobile (<768px)**:
-  - Sticky header (logo + add button)
+  - Sticky header showing only logo and add button (minimal UI)
   - Stacked controls
   - Scrollable content
+  - Summary section below header (also sticky)
 - **Tablet (768px-1023px)**:
-  - Sticky header
+  - Sticky header with logo, title, and add button
   - Stacked controls
   - Scrollable content
 - **Desktop (≥1024px)**:
   - Fixed height layout (no body scroll)
-  - Single-line controls (Filter | Search | View Toggle)
+  - Single-line controls (Filter | Search | View Toggle) centered
   - Scrollable member cards area only
+  - Full header with all elements visible
 
 **Why this approach?**
 
-- Better mobile UX (header always accessible)
+- Better mobile UX (header always accessible, minimal clutter)
 - Desktop uses space efficiently
 - Consistent experience across devices
+- Mobile-optimized header reduces visual noise
 
 ## 🚀 Running Locally
 
@@ -372,8 +393,10 @@ Visit `http://localhost:3000` to interact with the dashboard.
 
 - **Linting**: `yarn lint` may fail in sandboxed environments with `EPERM` errors. Run locally outside the sandbox to verify.
 - **Browser Support**: Modern browsers with ES6+ support required
-- **Storage**: Uses localStorage (5-10MB limit), gracefully handles quota exceeded errors
+- **Storage**: Uses encrypted localStorage (5-10MB limit), gracefully handles quota exceeded errors
+- **Encryption**: Uses CryptoJS for AES encryption. Set `NEXT_PUBLIC_JWT_SECRET` or `JWT_SECRET` environment variable for custom encryption key (32+ characters)
 - **Code Quality**: All files under 100 lines, following single responsibility principle
+- **Dependencies**: `crypto-js` and `@types/crypto-js` for encrypted storage
 
 ## 🎨 Design System
 

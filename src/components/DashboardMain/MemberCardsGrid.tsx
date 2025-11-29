@@ -1,10 +1,10 @@
 import { memo } from "react";
-import type { TeamMember } from "@/types/dashboard";
+import type { Availability, TeamMember } from "@/types/dashboard";
 import { MemberCard } from "../MemberCard";
 
 type MemberCardsGridProps = {
   members: TeamMember[];
-  onToggle: (id: string) => void;
+  onStatusChange: (id: string, status: Availability) => void;
   onEdit: (member: TeamMember) => void;
   onRemove: (member: TeamMember) => void;
 };
@@ -14,7 +14,7 @@ type MemberCardsGridProps = {
  */
 export const MemberCardsGrid = memo(function MemberCardsGrid({
   members,
-  onToggle,
+  onStatusChange,
   onEdit,
   onRemove,
 }: MemberCardsGridProps) {
@@ -24,7 +24,7 @@ export const MemberCardsGrid = memo(function MemberCardsGrid({
         <MemberCard
           key={member.id}
           member={member}
-          onToggle={onToggle}
+          onStatusChange={onStatusChange}
           onEdit={onEdit}
           onRemove={onRemove}
         />

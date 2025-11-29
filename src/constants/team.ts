@@ -54,6 +54,12 @@ export const FILTER_OPTIONS: { value: Filter; label: string }[] = [
   { value: "offline", label: "Offline" },
 ];
 
+export const STATUS_OPTIONS: { value: Availability; label: string }[] = [
+  { value: "available", label: "Available" },
+  { value: "busy", label: "Busy" },
+  { value: "offline", label: "Offline" },
+];
+
 /**
  * Status cycle: available → busy → available → offline → available
  * - available → busy: Start working

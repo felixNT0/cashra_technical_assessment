@@ -1,11 +1,11 @@
-import { memo } from "react";
-import type { TeamMember } from "@/types/dashboard";
+import { memo, useCallback } from "react";
+import type { Availability, TeamMember } from "@/types/dashboard";
 import { getNextStatus } from "@/utils/status";
 import { Button } from "../ui/Button";
 
 type MemberCardListActionsProps = {
   member: TeamMember;
-  onToggle: () => void;
+  onStatusChange: (status: Availability) => void;
   onEdit: () => void;
   onRemove: () => void;
 };
@@ -15,10 +15,17 @@ type MemberCardListActionsProps = {
  */
 export const MemberCardListActions = memo(function MemberCardListActions({
   member,
-  onToggle,
+  onStatusChange,
   onEdit,
   onRemove,
 }: MemberCardListActionsProps) {
+  const handleToggle = useCallback(() => {
+    const nextStatus = getNextStatus(member.status);
+    onStatusChange(nextStatus);
+  }, [member.status, onStatusChange]);
+
+  const nextStatus = getNextStatus(member.status);
+
   return (
     <div className="flex items-center gap-2">
       <div className="flex gap-1 opacity-100 transition-opacity lg:opacity-0 lg:group-hover:opacity-100">
@@ -34,13 +41,13 @@ export const MemberCardListActions = memo(function MemberCardListActions({
           ×
         </Button>
       </div>
-      <Button variant="primary" size="md" onClick={onToggle} className="w-auto">
+      <Button variant="primary" size="md" onClick={handleToggle} className="w-auto">
         <span>→</span>
         <span className="hidden sm:inline">
-          Mark as {member.status === "available" && member.returnTime ? "offline" : getNextStatus(member.status)}
+          Mark as {nextStatus}
         </span>
         <span className="sm:hidden">
-          {member.status === "available" && member.returnTime ? "offline" : getNextStatus(member.status)}
+          {nextStatus}
         </span>
       </Button>
     </div>

@@ -1,5 +1,5 @@
 import { memo, useCallback } from "react";
-import type { TeamMember } from "@/types/dashboard";
+import type { Availability, TeamMember } from "@/types/dashboard";
 import { STATUS_BAR_STYLES } from "@/utils/constants";
 import { getNextStatus } from "@/utils/status";
 import { displayReturnTime, hasReturnHistory } from "@/utils/time";
@@ -9,7 +9,7 @@ import { StatusBadge } from "./ui/StatusBadge";
 
 type MemberCardProps = {
   member: TeamMember;
-  onToggle: (id: string) => void;
+  onStatusChange: (id: string, status: Availability) => void;
   onEdit: (member: TeamMember) => void;
   onRemove: (member: TeamMember) => void;
 };
@@ -17,16 +17,21 @@ type MemberCardProps = {
 // Memoized component to prevent unnecessary re-renders
 export const MemberCard = memo(function MemberCard({
   member,
-  onToggle,
+  onStatusChange,
   onEdit,
   onRemove,
 }: MemberCardProps) {
   const seenReturn = hasReturnHistory(member.returnTime);
 
   // Memoized handlers to prevent prop changes
-  const handleToggle = useCallback(() => onToggle(member.id), [member.id, onToggle]);
+  const handleToggle = useCallback(() => {
+    const nextStatus = getNextStatus(member.status);
+    onStatusChange(member.id, nextStatus);
+  }, [member.id, member.status, onStatusChange]);
   const handleEdit = useCallback(() => onEdit(member), [member, onEdit]);
   const handleRemove = useCallback(() => onRemove(member), [member, onRemove]);
+
+  const nextStatus = getNextStatus(member.status);
 
   return (
     <article className="group relative flex h-full flex-col gap-2 rounded-xl border border-white/60 bg-linear-to-br from-white/95 to-white/80 p-3 shadow-lg shadow-slate-200/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-brand/20 active:scale-[0.99] touch-manipulation sm:gap-2.5 sm:rounded-2xl sm:p-3.5 md:gap-3 md:p-4">
@@ -88,10 +93,10 @@ export const MemberCard = memo(function MemberCard({
       <Button variant="primary" size="md" onClick={handleToggle} className="mt-auto">
         <span>→</span>
         <span className="hidden sm:inline">
-          Mark as {member.status === "available" && member.returnTime ? "offline" : getNextStatus(member.status)}
+          Mark as {nextStatus}
         </span>
         <span className="sm:hidden">
-          {member.status === "available" && member.returnTime ? "offline" : getNextStatus(member.status)}
+          {nextStatus}
         </span>
       </Button>
     </article>

@@ -56,6 +56,44 @@ export function useMemberMutations(
     [setMembers]
   );
 
+  /**
+   * Set status directly (allows selecting any status)
+   * Still applies business rules when transitioning
+   */
+  const setStatus = useCallback(
+    (id: string, newStatus: Availability) => {
+      setMembers((prev) =>
+        prev.map((member) => {
+          if (member.id !== id) return member;
+          const currentStatus = member.status;
+
+          // If status hasn't changed, no update needed
+          if (currentStatus === newStatus) return member;
+
+          // Rule b: Increment tasks when transitioning from busy to available
+          const shouldIncrementTasks =
+            currentStatus === "busy" && newStatus === "available";
+
+          // Rule a: Store return time when transitioning from offline to available
+          const shouldSetReturnTime =
+            currentStatus === "offline" && newStatus === "available";
+
+          return {
+            ...member,
+            status: newStatus,
+            tasksCompleted: shouldIncrementTasks
+              ? member.tasksCompleted + 1
+              : member.tasksCompleted,
+            returnTime: shouldSetReturnTime
+              ? stampReturnTime()
+              : member.returnTime ?? null,
+          };
+        })
+      );
+    },
+    [setMembers]
+  );
+
   const addMember = useCallback(
     (data: Omit<TeamMember, "id">) => {
       const trimmedName = data.name?.trim() ?? "";
@@ -95,5 +133,5 @@ export function useMemberMutations(
     [setMembers]
   );
 
-  return { toggleStatus, addMember, updateMember, removeMember };
+  return { toggleStatus, setStatus, addMember, updateMember, removeMember };
 }

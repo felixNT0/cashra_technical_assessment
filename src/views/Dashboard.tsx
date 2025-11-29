@@ -22,7 +22,7 @@ export function Dashboard() {
     setFilter,
     searchQuery,
     setSearchQuery,
-    toggleStatus,
+    setStatus,
     addMember,
     updateMember,
     removeMember,
@@ -45,15 +45,15 @@ export function Dashboard() {
   } = useMemberModals();
 
   // Wrapped handlers with toast notifications
-  const handleToggleWithToast = useCallback(
-    (id: string) => {
+  const handleStatusChangeWithToast = useCallback(
+    (id: string, status: string) => {
       const member = members.find((m) => m.id === id);
       if (member) {
-        toggleStatus(id);
-        showSuccess(`Updated ${member.name}'s status`);
+        setStatus(id, status as "available" | "busy" | "offline");
+        showSuccess(`Updated ${member.name}'s status to ${status}`);
       }
     },
-    [members, toggleStatus, showSuccess]
+    [members, setStatus, showSuccess]
   );
 
   const handleCreateSubmitMemo = useCallback(
@@ -93,7 +93,7 @@ export function Dashboard() {
         searchQuery={searchQuery}
         onFilterChange={setFilter}
         onSearchChange={setSearchQuery}
-        onToggle={handleToggleWithToast}
+        onStatusChange={handleStatusChangeWithToast}
         onEdit={openEditModal}
         onRemove={openDeleteModal}
       />

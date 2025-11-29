@@ -1,10 +1,10 @@
+import type { Availability, TeamMember } from "@/types/dashboard";
 import { memo } from "react";
-import type { TeamMember } from "@/types/dashboard";
 import { MemberCardList } from "../MemberCardList";
 
 type MemberCardsListProps = {
   members: TeamMember[];
-  onToggle: (id: string) => void;
+  onStatusChange: (id: string, status: Availability) => void;
   onEdit: (member: TeamMember) => void;
   onRemove: (member: TeamMember) => void;
 };
@@ -14,7 +14,7 @@ type MemberCardsListProps = {
  */
 export const MemberCardsList = memo(function MemberCardsList({
   members,
-  onToggle,
+  onStatusChange,
   onEdit,
   onRemove,
 }: MemberCardsListProps) {
@@ -24,7 +24,7 @@ export const MemberCardsList = memo(function MemberCardsList({
         <MemberCardList
           key={member.id}
           member={member}
-          onToggle={onToggle}
+          onStatusChange={onStatusChange}
           onEdit={onEdit}
           onRemove={onRemove}
         />
@@ -32,4 +32,3 @@ export const MemberCardsList = memo(function MemberCardsList({
     </div>
   );
 });
-

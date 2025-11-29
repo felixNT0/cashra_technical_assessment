@@ -19,7 +19,7 @@ export const DashboardHeader = memo(function DashboardHeader({
       {/* Sticky header on mobile/tablet, normal on desktop */}
       <header className="sticky top-0 z-[100] shrink-0 border-b border-white/30 bg-white/95 backdrop-blur-xl shadow-lg shadow-white/40 lg:relative lg:z-10">
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-2 px-3 py-2 sm:gap-3 sm:px-4 sm:py-2.5 md:gap-4 md:px-6 md:py-3 lg:py-3.5 lg:px-8">
-          {/* Left section: Logo + Title */}
+          {/* Left section: Logo + Title (Title hidden on mobile) */}
           <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3 md:gap-4">
             <div className="relative shrink-0 h-8 w-8 rounded-lg bg-linear-to-br from-brand to-sky-500 p-1.5 shadow-lg shadow-brand/30 sm:h-9 sm:w-9 sm:rounded-xl md:h-10 md:w-10 md:p-2">
               <span className="absolute inset-0 h-2 w-2 m-auto rounded-full bg-brand animate-ping opacity-75 sm:h-2.5 sm:w-2.5 md:h-3 md:w-3" />
@@ -41,7 +41,7 @@ export const DashboardHeader = memo(function DashboardHeader({
             Live sync
           </div>
 
-          {/* Right section: Compact Summary + Add button */}
+          {/* Right section: Compact Summary + Add button (Summary hidden on mobile) */}
           <div className="flex items-center gap-1.5 sm:gap-2 md:gap-2.5 lg:gap-3">
             <div className="hidden lg:block">
               <SummaryCardCompact summary={summary} />

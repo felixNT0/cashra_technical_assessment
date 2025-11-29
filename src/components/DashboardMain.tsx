@@ -1,4 +1,4 @@
-import type { Filter, TeamMember } from "@/types/dashboard";
+import type { Availability, Filter, TeamMember } from "@/types/dashboard";
 import { memo, useState } from "react";
 import { ControlsSection } from "./DashboardMain/ControlsSection";
 import { MemberCardsGrid } from "./DashboardMain/MemberCardsGrid";
@@ -13,7 +13,7 @@ type DashboardMainProps = {
   searchQuery: string;
   onFilterChange: (value: Filter) => void;
   onSearchChange: (value: string) => void;
-  onToggle: (id: string) => void;
+  onStatusChange: (id: string, status: Availability) => void;
   onEdit: (member: TeamMember) => void;
   onRemove: (member: TeamMember) => void;
 };
@@ -29,7 +29,7 @@ export const DashboardMain = memo(function DashboardMain({
   searchQuery,
   onFilterChange,
   onSearchChange,
-  onToggle,
+  onStatusChange,
   onEdit,
   onRemove,
 }: DashboardMainProps) {
@@ -78,14 +78,14 @@ export const DashboardMain = memo(function DashboardMain({
           ) : viewMode === "grid" ? (
             <MemberCardsGrid
               members={filteredMembers}
-              onToggle={onToggle}
+              onStatusChange={onStatusChange}
               onEdit={onEdit}
               onRemove={onRemove}
             />
           ) : (
             <MemberCardsList
               members={filteredMembers}
-              onToggle={onToggle}
+              onStatusChange={onStatusChange}
               onEdit={onEdit}
               onRemove={onRemove}
             />

@@ -2,13 +2,13 @@ import type { Availability } from "@/types/dashboard";
 
 /**
  * Get the next status in the cycle
- * Cycle: available → busy → available → offline → available
+ * Cycle: available → busy → offline → available (repeats)
  */
 export function getNextStatus(currentStatus: Availability): Availability {
   if (currentStatus === "available") {
     return "busy"; // available → busy: start working
   } else if (currentStatus === "busy") {
-    return "available"; // busy → available: complete task (increments tasks)
+    return "offline"; // busy → offline: go offline
   } else {
     return "available"; // offline → available: return (stores return time)
   }

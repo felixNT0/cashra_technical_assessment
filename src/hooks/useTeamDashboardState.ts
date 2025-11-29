@@ -52,7 +52,7 @@ export function useTeamDashboardState() {
     []
   );
 
-  const { toggleStatus, addMember, updateMember, removeMember } =
+  const { toggleStatus, setStatus, addMember, updateMember, removeMember } =
     useMemberMutations(members, setMembers);
   useDashboardStorage({
     members,
@@ -80,6 +80,7 @@ export function useTeamDashboardState() {
     searchQuery: filters.searchQuery,
     setSearchQuery,
     toggleStatus,
+    setStatus,
     addMember,
     updateMember,
     removeMember,
