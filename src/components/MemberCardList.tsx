@@ -55,13 +55,15 @@ export const MemberCardList = memo(function MemberCardList({
             </p>
           </div>
         </div>
-        <MemberCardListStats member={member} />
-        <MemberCardListActions
-          member={member}
-          onStatusChange={handleStatusChange}
-          onEdit={handleEdit}
-          onRemove={handleRemove}
-        />
+        <div className="flex items-center gap-3 shrink-0">
+          <MemberCardListStats member={member} />
+          <MemberCardListActions
+            member={member}
+            onStatusChange={handleStatusChange}
+            onEdit={handleEdit}
+            onRemove={handleRemove}
+          />
+        </div>
       </div>
     </article>
   );

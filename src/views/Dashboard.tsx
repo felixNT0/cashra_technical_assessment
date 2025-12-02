@@ -67,11 +67,27 @@ export function Dashboard() {
   const handleEditSubmitMemo = useCallback(
     (data: Parameters<typeof handleEditSubmit>[0]) => {
       if (selectedMember) {
-        handleEditSubmit(data, updateMember);
+        handleEditSubmit(data, (id, payload) => {
+          const existing = members.find((m) => m.id === id);
+          if (!existing) return;
+
+          const nextStatus = payload.status ?? existing.status;
+
+          // 1) Always update name & role (pure data change)
+          updateMember(id, {
+            name: payload.name,
+            role: payload.role,
+          });
+
+          // 2) If status changed, delegate to setStatus so business rules apply
+          if (nextStatus !== existing.status) {
+            setStatus(id, nextStatus);
+          }
+        });
         showSuccess(`Updated ${data.name}'s information`);
       }
     },
-    [handleEditSubmit, updateMember, selectedMember, showSuccess]
+    [handleEditSubmit, members, selectedMember, setStatus, updateMember, showSuccess]
   );
 
   const handleDeleteConfirmMemo = useCallback(() => {

@@ -21,4 +21,3 @@ export function getNextStatus(currentStatus: Availability): Availability {
 export function getStatusAfterAvailable(): Availability {
   return "offline";
 }
-

@@ -1,6 +1,5 @@
 import { memo, useCallback } from "react";
 import type { Availability, TeamMember } from "@/types/dashboard";
-import { getNextStatus } from "@/utils/status";
 import { Button } from "../ui/Button";
 
 type MemberCardListActionsProps = {
@@ -19,17 +18,23 @@ export const MemberCardListActions = memo(function MemberCardListActions({
   onEdit,
   onRemove,
 }: MemberCardListActionsProps) {
-  const handleToggle = useCallback(() => {
-    const nextStatus = getNextStatus(member.status);
-    onStatusChange(nextStatus);
-  }, [member.status, onStatusChange]);
-
-  const nextStatus = getNextStatus(member.status);
+  const handleSetStatus = useCallback(
+    (status: Availability) => {
+      onStatusChange(status);
+    },
+    [onStatusChange]
+  );
 
   return (
-    <div className="flex items-center gap-2">
-      <div className="flex gap-1 opacity-100 transition-opacity lg:opacity-0 lg:group-hover:opacity-100">
-        <Button variant="icon" size="sm" onClick={onEdit} aria-label={`Edit ${member.name}`}>
+    <div className="flex flex-col items-end gap-1.5 min-w-[140px] sm:min-w-[170px]">
+      {/* Edit / Remove actions */}
+      <div className="flex gap-0.5 rounded-full bg-slate-50/80 px-1 py-0.5 shadow-sm opacity-100 transition-opacity lg:opacity-0 lg:group-hover:opacity-100 sm:gap-1">
+        <Button
+          variant="icon"
+          size="sm"
+          onClick={onEdit}
+          aria-label={`Edit ${member.name}`}
+        >
           ✎
         </Button>
         <Button
@@ -41,15 +46,34 @@ export const MemberCardListActions = memo(function MemberCardListActions({
           ×
         </Button>
       </div>
-      <Button variant="primary" size="md" onClick={handleToggle} className="w-auto">
-        <span>→</span>
-        <span className="hidden sm:inline">
-          Mark as {nextStatus}
-        </span>
-        <span className="sm:hidden">
-          {nextStatus}
-        </span>
-      </Button>
+      {/* Segmented status control for list view */}
+      <div className="flex w-full gap-1 rounded-xl bg-slate-50/90 p-1 shadow-sm">
+        {(["available", "busy", "offline"] as Availability[]).map((status) => {
+          const isActive = member.status === status;
+          const label =
+            status === "available"
+              ? "Avail."
+              : status === "busy"
+              ? "Busy"
+              : "Off";
+
+          return (
+            <Button
+              key={status}
+              type="button"
+              size="sm"
+              variant={isActive ? "primary" : "secondary"}
+              className={`flex-1 min-w-[40px] px-2 text-[10px] sm:text-[11px] ${
+                isActive ? "font-semibold" : "font-medium text-slate-500"
+              }`}
+              onClick={() => handleSetStatus(status)}
+              aria-pressed={isActive}
+            >
+              {label}
+            </Button>
+          );
+        })}
+      </div>
     </div>
   );
 });
